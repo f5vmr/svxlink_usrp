@@ -45,29 +45,20 @@ VERSIONS="svxlink/src/versions"
  -d /etc/svxlink svxlink
 	sudo usermod -aG audio,nogroup,svxlink,plugdev svxlink
 	sudo usermod -aG gpio svxlink
-	sleep 40
-	sudo systemctl stop apache2 && sudo systemctl disable apache2
-	sudo wget https://github.com/pjsip/pjproject/archive/refs/tags/2.12.1.tar.gz
-	sudo mv 2.12.1.tar.gz pjProject-2.12.1.tar.gz
-	sudo tar -zxvf pjProject-2.12.1.tar.gz
-	cd pjproject-2.12.1
-	sudo ./configure --disable-video --disable-libwebrtc CPPFLAGS=-fPIC CXXFLAGS=-fPIC CFLAGS=-fPIC
-	sudo make dep
-	sudo make
-	sudo make install
-
+	
+	
 # Downloading Source Code for SVXLink
 	echo -e `date` "${YELLOW} downloading SVXLink source code … ${NORMAL}"
 	cd
 	sudo git clone https://github.com/dl1hrc/svxlink.git
 	cd svxlink
-	sudo git checkout svxlink-usrp
+	sudo git checkout tetra-contrib
 	cd src
 	sudo mkdir build
 	cd build	
 	# Compilation
 	
-	sudo cmake -DUSE_QT=OFF -DCMAKE_INSTALL_PREFIX=/usr -DSYSCONF_INSTALL_DIR=/etc -DLOCAL_STATE_DIR=/var -DCMAKE_BUILD_TYPE=Release -DWITH_CONTRIB_USRP_LOGIC=ON -DWITH_SYSTEMD=ON ..
+	sudo cmake -DUSE_QT=OFF -DCMAKE_INSTALL_PREFIX=/usr -DSYSCONF_INSTALL_DIR=/etc -DLOCAL_STATE_DIR=/var -DCMAKE_BUILD_TYPE=Release -DWITH_SYSTEMD=ON ..
 echo -e `date` "${YELLOW} Compiling ${NORMAL}"
 	sudo make
 	#sudo make doc
@@ -104,11 +95,11 @@ echo -e `date` "${YELLOW} Compiling ${NORMAL}"
 	sudo sed -i "s/MYCALL/$CALL/g" $CONF
 	sudo sed -i "s/MYCALL/$CALL/g" $OP/node_info.json
 #
-	echo `date` Setting Squelch Hangtime to 10
-	sudo sed -i "s/SQL_HANGTIME=200/SQL_HANGTIME=10/g" $CONF
-#	
-	echo `date` Disabling audio distortion warning messages
-	sudo sed -i "s/PEAK_METER=1/PEAK_METER=0/g" $CONF
+	#echo `date` Setting Squelch Hangtime to 10
+	#sudo sed -i "s/SQL_HANGTIME=200/SQL_HANGTIME=10/g" $CONF
+#	#
+	#echo `date` Disabling audio distortion warning messages
+	#sudo sed -i "s/PEAK_METER=1/PEAK_METER=0/g" $CONF
 #
 	echo `date` Updating SplashScreen on startup
 	sudo sed -i "s/MYCALL/$CALL/g" /etc/update-motd.d/10-uname
@@ -116,18 +107,18 @@ echo -e `date` "${YELLOW} Compiling ${NORMAL}"
 #
 	echo `date` Changing Log file
 	sudo sed -i "s/log\/svxlink/log\/svxlink.log/g" /etc/default/svxlink
-	if [$card=true]
-	then
-	sudo sed -i "/PTT_TYPE/iHID_DEVICE=\/dev\/hidraw0" $CONF
-	sudo sed -i "s/PTT_TYPE=GPIO/PTT_TYPE=Hidraw/g" $CONF
-	sudo sed -i "s/PTT_PORT=GPIO/PTT_PORT=\/dev\/hidraw0/g" $CONF
-	sudo sed -i "s/PTT_PIN=gpio24/HID_PTT_PIN=GPIO3/g" $CONF
+	#if [$card=true]
+	#then
+	#sudo sed -i "/PTT_TYPE/iHID_DEVICE=\/dev\/hidraw0" $CONF
+	#sudo sed -i "s/PTT_TYPE=GPIO/PTT_TYPE=Hidraw/g" $CONF
+	#sudo sed -i "s/PTT_PORT=GPIO/PTT_PORT=\/dev\/hidraw0/g" $CONF
+	#sudo sed -i "s/PTT_PIN=gpio24/HID_PTT_PIN=GPIO3/g" $CONF
 	sudo sed -i "s/\#MUTE/MUTE/g" /etc/svxlink/svxlink.d/ModuleEchoLink.conf
 	sudo sed -i "s/\#DEFAULT_LANG=en_US/DEFAULT_LANG=en_GB/g" /etc/svxlink/svxlink.d/ModuleEchoLink.conf
 	sudo sed -i "s/\#MUTE/MUTE/g" /etc/svxlink/svxlink.d/ModuleMetarInfo.conf
 	sudo sed -i "s/\#DEFAULT_LANG=en_US/DEFAULT_LANG=en_GB/g" /etc/svxlink/svxlink.d/ModuleMetarInfo.conf	
 
-	fi
+	#fi
 	sudo chown -R svxlink:svxlink /usr/share/svxlink/events.d
 	sudo chown -R svxlink:svxlink /home/pi//svxlink
 	sudo chown -R svxlink:svxlink /var/spool/svxlink
@@ -138,22 +129,11 @@ echo -e `date` "${YELLOW} Compiling ${NORMAL}"
 	sudo systemctl enable svxlink
 	sleep 10
 	sudo systemctl start svxlink_gpio_setup.service
-	sleep 10
-	#sudo systemctl start svxlink.service
+	sudo systemctl start svxlink.service
 
 
 echo -e `date` "${RED}Installation of SVXLink is complete\n${NORMAL}"
-echo -e `date` "${GREEN} Now for DVSwitch\n\n\n${NORMAL}"
-echo
-sleep 10
-cd 
-sudo wget http://dvswitch.org/buster
-sudo chmod +x buster
-sudo ./buster
-sudo apt update -y && sudo apt upgrade
-sudo apt install dvswitch-server -y
-#sudo systemctl disable lighttpd
-#sudo reboot
+
 
 
 	
