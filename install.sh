@@ -5,10 +5,6 @@ GREEN="\033[1;32m"
 NORMAL="\033[0;39m"
 RED="\033[1;31m"
 YELLOW="\033[1;33m"
-sudo bash /home/pi/svxlink_raspberry/audio_update.sh
-#
-# Auto run install.sh
-#
 
 CONF="/etc/svxlink/svxlink.conf"
 GPIO="/etc/svxlink/gpio.conf"
@@ -41,7 +37,7 @@ VERSIONS="svxlink/src/versions"
 # Creating Groups and Users
 	echo -e `date` "${YELLOW} Creating Groups and Users ${NORMAL}"
 	sudo groupadd svxlink
-	sudo useradd -g svxlink -G tty,svxlink,audio,plugdev,gpio,dialout -c "SvxLink Master" --shell=/bin/false -m svxlink
+	sudo useradd -g svxlink -G tty,svxlink,audio,plugdev,dialout -c "SvxLink Master" --shell=/bin/false -m svxlink
  -d /etc/svxlink svxlink
 	sudo usermod -aG audio,nogroup,svxlink,plugdev svxlink
 	sudo usermod -aG gpio svxlink
@@ -79,11 +75,8 @@ echo -e `date` "${YELLOW} Compiling ${NORMAL}"
 	sudo ldconfig
 # Installing United Kingdom Sound files
 	cd /usr/share/svxlink/sounds
-	sudo wget https://g4nab.co.uk/wp-content/uploads/2023/08/en_GB.tar_.gz
+	sudo git clone https://github.com/f5vmr/en_GB
  	
-	sudo tar -zxvf en_GB.tar_.gz
-	sudo rm en_GB.tar_.gz
-	
 	
 	cd ..	
 	sudo chmod 777 *
@@ -147,9 +140,9 @@ echo -e `date` "${GREEN} Now for DVSwitch\n\n\n${NORMAL}"
 echo
 sleep 10
 cd 
-sudo wget http://dvswitch.org/buster
-sudo chmod +x buster
-sudo ./buster
+sudo wget http://dvswitch.org/bookworm
+sudo chmod +x bookworm
+sudo ./bookworm
 sudo apt update -y && sudo apt upgrade
 sudo apt install dvswitch-server -y
 #sudo systemctl disable lighttpd

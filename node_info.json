@@ -1,19 +1,19 @@
 {
-    "nodeLocation": "Wherever",
+    "nodeLocation": "County",
     "hidden": false,
-    "sysop": "MYCALL",
+    "sysop": "CALLSIGN",
     "qth": [
         {
-            "name": "Place",
+            "name": "Town",
             "pos": {
-                "lat": "55.0",
-                "long": "-1.5",
-                "loc": "AA01AA"
+                "lat": "00.00",
+                "long": "00.00",
+                "loc": "AA00AA"
             },
             "rx": {
                 "K": {
                     "name": "Rx1",
-                    "freq": 145.3375,
+                    "freq": 145.2375,
                     "sqlType": "COR",
                     "ant": {
                         "comment": "Vertical",
